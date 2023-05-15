@@ -1,6 +1,6 @@
 # LibraryManagementApi
 
-Click [here]("https:localhost") for demo. 
+Click [here](https://localhost) for demo. 
 Credentials:
 
 | Username | Password | Role |
