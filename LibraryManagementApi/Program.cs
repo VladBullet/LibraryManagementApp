@@ -17,6 +17,8 @@ builder.Services.AddDbContext<LibraryContext>(options =>
     var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
     options.UseNpgsql(connectionString);
 });
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+
 // authentication and authorization
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
    .AddJwtBearer(options =>
