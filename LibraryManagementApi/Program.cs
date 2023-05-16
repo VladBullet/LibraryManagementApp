@@ -34,8 +34,12 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
        };
    });
-builder.Services.AddAuthorization();
-
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy(AuthorizationPolicies.User, policy => policy.RequireAuthenticatedUser().RequireRole(AuthorizationPolicies.User));
+    options.AddPolicy(AuthorizationPolicies.Author, policy => policy.RequireAuthenticatedUser().RequireRole(AuthorizationPolicies.Author));
+    options.AddPolicy(AuthorizationPolicies.Admin, policy => policy.RequireAuthenticatedUser().RequireRole(AuthorizationPolicies.Admin));
+});
 
 WebApplication app = builder.Build();
 
