@@ -36,7 +36,7 @@ namespace PostgreSQL.Demo.API.Controllers
 
         // POST api/<AuthorController>
         [HttpPost]
-        public async Task<IActionResult> CreateAuthor(CreateAuthorRequestDto model)
+        public async Task<IActionResult> CreateAuthor(AuthorDto model)
         {
             int authorId = await _authorService.CreateAuthor(model);
 
@@ -50,7 +50,7 @@ namespace PostgreSQL.Demo.API.Controllers
 
         // PUT api/<AuthorController>/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateAuthor(int id, UpdateAuthorRequestDto model)
+        public async Task<IActionResult> UpdateAuthor(int id, AuthorDto model)
         {
             await _authorService.UpdateAuthor(id, model);
             return Ok(new { message = "Author was successfully updated in database" });

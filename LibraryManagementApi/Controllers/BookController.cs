@@ -1,4 +1,5 @@
-﻿using LibraryManagementApi.Dto;
+﻿using AutoMapper;
+using LibraryManagementApi.Dto;
 using LibraryManagementApi.Models;
 using Microsoft.AspNetCore.Mvc;
 using PostgreSQL.Demo.API.Services;
@@ -36,7 +37,7 @@ namespace PostgreSQL.Demo.API.Controllers
 
         // POST api/<BooksController>
         [HttpPost]
-        public async Task<IActionResult> CreateBook(CreateBookRequestDto model)
+        public async Task<IActionResult> CreateBook(BookDto model)
         {
             int book = await _bookService.CreateBook(model);
 
@@ -50,7 +51,7 @@ namespace PostgreSQL.Demo.API.Controllers
 
         // PUT api/<BooksController>/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateBook(int id, UpdateBookRequestDto model)
+        public async Task<IActionResult> UpdateBook(int id, BookDto model)
         {
             await _bookService.UpdateBook(id, model);
             return Ok("The book was successfully updated in the database");

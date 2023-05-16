@@ -1,5 +1,5 @@
-﻿using LibraryManagementApi.Models;
-using LibraryManagementApi.ViewModels;
+﻿using LibraryManagementApi.Dto;
+using LibraryManagementApi.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -21,7 +21,7 @@ namespace LibraryManagementApi.Controllers
 
         [Route("/security/createToken")]
         [AllowAnonymous]
-        public async Task<IActionResult> CreateToken([FromBody] UserVM login)
+        public async Task<IActionResult> CreateToken([FromBody] UserDto login)
         {
             {
                 IActionResult response = Unauthorized();
@@ -49,7 +49,7 @@ namespace LibraryManagementApi.Controllers
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
-        private async Task<User> AuthenticateUserAsync(UserVM login)
+        private async Task<User> AuthenticateUserAsync(UserDto login)
         {
             User user = null;
 

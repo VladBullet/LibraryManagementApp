@@ -1,8 +1,7 @@
-﻿namespace LibraryManagementApi.Models
+﻿namespace LibraryManagementApi.Dto
 {
-    public class Book
+    public class BookDto
     {
-        public int Id { get; internal set; }
         public object Name { get; internal set; }
         public object AuthorName { get; internal set; }
     }

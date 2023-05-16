@@ -1,4 +1,5 @@
-﻿using LibraryManagementApi;
+﻿using AutoMapper;
+using LibraryManagementApi;
 using LibraryManagementApi.Dto;
 using LibraryManagementApi.Models;
 using Microsoft.EntityFrameworkCore;
@@ -25,14 +26,14 @@ namespace PostgreSQL.Demo.API.Services
         /// Create a new book in the database
         /// </summary>
         /// <param name="model">Create book request model</param>
-        Task<int> CreateBook(CreateBookRequestDto model);
+        Task<int> CreateBook(BookDto model);
 
         /// <summary>
         /// Update a book in the database if the book already exists.
         /// </summary>
         /// <param name="id"></param>
         /// <param name="model"></param>
-        Task UpdateBook(int id, UpdateBookRequestDto model);
+        Task UpdateBook(int id, BookDto model);
 
         /// <summary>
         /// Delete a single book in the dabase. Will delete the book if the book exists in the database.
@@ -44,13 +45,15 @@ namespace PostgreSQL.Demo.API.Services
     public class BookService : IBookService
     {
         private LibraryContext _dbContext;
+        private IMapper _mapper;
 
-        public BookService(LibraryContext dbContext)
+        public BookService(LibraryContext dbContext, IMapper mapper)
         {
             _dbContext = dbContext;
+            _mapper = mapper;
         }
 
-        public async Task<int> CreateBook(CreateBookRequestDto model)
+        public async Task<int> CreateBook(BookDto model)
         {
             // Validate new book
             if (await _dbContext.Books.AnyAsync(x => x.Name == model.Name && x.AuthorName == model.AuthorName))
@@ -86,7 +89,7 @@ namespace PostgreSQL.Demo.API.Services
             return await _getBookById(id);
         }
 
-        public async Task UpdateBook(int id, UpdateBookRequestDto model)
+        public async Task UpdateBook(int id, BookDto model)
         {
             Book? book = await _getBookById(id);
 

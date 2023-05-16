@@ -1,4 +1,5 @@
-﻿using LibraryManagementApi;
+﻿using AutoMapper;
+using LibraryManagementApi;
 using LibraryManagementApi.Dto;
 using LibraryManagementApi.Models;
 using Microsoft.EntityFrameworkCore;
@@ -27,14 +28,14 @@ namespace PostgreSQL.Demo.API.Services
         /// Create a new author in the database
         /// </summary>
         /// <param name="model">Create Author request model</param>
-        Task<int> CreateAuthor(CreateAuthorRequestDto model);
+        Task<int> CreateAuthor(AuthorDto model);
 
         /// <summary>
         /// Update an author in the database if the author already exists.
         /// </summary>
         /// <param name="id"></param>
         /// <param name="model"></param>
-        Task UpdateAuthor(int id, UpdateAuthorRequestDto model);
+        Task UpdateAuthor(int id, AuthorDto model);
 
         /// <summary>
         /// Delete a single author in the dabase. Will delete the author if the author exists in the database.
@@ -47,13 +48,15 @@ namespace PostgreSQL.Demo.API.Services
     public class AuthorService : IAuthorService
     {
         private LibraryContext _dbContext;
+        private IMapper _mapper;
 
-        public AuthorService(LibraryContext dbContext)
+        public AuthorService(LibraryContext dbContext,IMapper mapper)
         {
             _dbContext = dbContext;
+            _mapper = mapper;
         }
 
-        public async Task<int> CreateAuthor(CreateAuthorRequestDto model)
+        public async Task<int> CreateAuthor(AuthorDto model)
         {
             // Validate new author
             if (await _dbContext.Authors.AnyAsync(x => x.Name == model.Name))
@@ -105,7 +108,7 @@ namespace PostgreSQL.Demo.API.Services
             return await _getAuthorById(id, includeBooks).ConfigureAwait(true);
         }
 
-        public async Task UpdateAuthor(int id, UpdateAuthorRequestDto model)
+        public async Task UpdateAuthor(int id, AuthorDto model)
         {
             Author? author = await _getAuthorById(id).ConfigureAwait(true);
 
