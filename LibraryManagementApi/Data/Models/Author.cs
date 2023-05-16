@@ -8,7 +8,9 @@ namespace LibraryManagementApi.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; internal set; }
-        public string Name { get; internal set; }
+        public string Firstname { get; internal set; }
+        public string Lastname { get; internal set; }
+        public string Name { get { return Firstname + " " + Lastname; } }
         public virtual List<Book> Books { get; internal set; }
     }
 }

@@ -16,12 +16,16 @@ namespace LibraryManagementApi
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Author>().HasKey(x => x.Id);
+            modelBuilder.Entity<Author>().HasAlternateKey(x => new { x.Firstname, x.Lastname});
             modelBuilder.Entity<Author>()
                 .HasMany(a => a.Books)
                 .WithOne(b => b.Author)
                 .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Book>().HasKey(b => b.Id);
+            modelBuilder.Entity<Book>()
+                .HasOne(b => b.Author).WithMany(a=>a.Books).HasForeignKey(b => b.AuthorId);
+
             modelBuilder.Entity<User>().HasKey(b => b.Id);
 
         }
