@@ -5,8 +5,8 @@ Credentials:
 
 | Username | Password | Role |
 | ------------- |:-------------:| :-----:|
-| admin | admin | admin / librarian |
-| john.snow | pass | regular user |
+| admin | pass | admin / librarian |
+| john.snow | throne | regular user |
 | jane.austen | pride | author |
 
 # Specifications of this API (Technologies used)
