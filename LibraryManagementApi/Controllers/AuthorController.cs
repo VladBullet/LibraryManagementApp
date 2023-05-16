@@ -1,5 +1,6 @@
 ﻿using LibraryManagementApi.Dto;
 using LibraryManagementApi.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PostgreSQL.Demo.API.Services;
 
@@ -9,6 +10,7 @@ namespace PostgreSQL.Demo.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class AuthorController : ControllerBase
     {
         private IAuthorService _authorService;

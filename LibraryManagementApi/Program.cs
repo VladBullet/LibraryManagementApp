@@ -2,11 +2,16 @@ using LibraryManagementApi;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using PostgreSQL.Demo.API.Services;
+using System.Reflection;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddScoped<IAuthorService, AuthorService>();
+builder.Services.AddScoped<IBookService, BookService>();
 builder.Services.AddDbContext<LibraryContext>(options =>
 {
     options.UseNpgsql(builder.Configuration.GetConnectionString("PostgreSQL"));
@@ -16,7 +21,12 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-builder.Services.AddSwaggerGen();
+//builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.AddSecurityDefinition("Bearer", SwaggerConfig.JwtBearerSecurityScheme);
+    c.AddSecurityRequirement(SwaggerConfig.JwtBearerSecurityRequirement);
+});
 
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 

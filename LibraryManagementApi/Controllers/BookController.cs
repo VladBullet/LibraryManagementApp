@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using LibraryManagementApi.Dto;
 using LibraryManagementApi.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PostgreSQL.Demo.API.Services;
 
@@ -8,6 +9,7 @@ namespace PostgreSQL.Demo.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class BooksController : ControllerBase
     {
         private readonly IBookService _bookService;
