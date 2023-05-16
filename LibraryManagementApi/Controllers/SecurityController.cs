@@ -21,6 +21,7 @@ namespace LibraryManagementApi.Controllers
 
         [Route("/security/createToken")]
         [AllowAnonymous]
+        [HttpPost]
         public async Task<IActionResult> CreateToken([FromBody] UserDto login)
         {
             {

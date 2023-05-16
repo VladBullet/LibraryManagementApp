@@ -1,6 +1,7 @@
 ﻿using LibraryManagementApi.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace LibraryManagementApi
 {
@@ -14,10 +15,15 @@ namespace LibraryManagementApi
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Author>().HasKey(x => x.Id);
             modelBuilder.Entity<Author>()
                 .HasMany(a => a.Books)
                 .WithOne(b => b.Author)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Book>().HasKey(b => b.Id);
+            modelBuilder.Entity<User>().HasKey(b => b.Id);
+
         }
     }
 }
