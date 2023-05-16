@@ -50,7 +50,7 @@ namespace PostgreSQL.Demo.API.Services
         private LibraryContext _dbContext;
         private IMapper _mapper;
 
-        public AuthorService(LibraryContext dbContext,IMapper mapper)
+        public AuthorService(LibraryContext dbContext, IMapper mapper)
         {
             _dbContext = dbContext;
             _mapper = mapper;
@@ -60,7 +60,7 @@ namespace PostgreSQL.Demo.API.Services
         {
             // Validate new author
             if (await _dbContext.Authors.AnyAsync(x => x.Name == model.Name))
-                throw new Exception($"An author with the name {model.Name} already exists.");
+                throw new Exception($"An author with the same name {model.Name} already exists.");
 
             // Map model to new author object
             Author author = _mapper.Map<Author>(model);
@@ -80,7 +80,7 @@ namespace PostgreSQL.Demo.API.Services
 
         public async Task DeleteAuthor(int id)
         {
-            Author? author = await _getAuthorById(id);
+            Author? author = await GetAuthorById(id);
 
             _dbContext.Authors.Remove(author); // Delete the author and books (Cascading is enabled)
             await _dbContext.SaveChangesAsync().ConfigureAwait(true);
@@ -105,16 +105,12 @@ namespace PostgreSQL.Demo.API.Services
 
         public async Task<Author> GetAuthorByIdAsync(int id, bool includeBooks = false)
         {
-            return await _getAuthorById(id, includeBooks).ConfigureAwait(true);
+            return await GetAuthorById(id, includeBooks).ConfigureAwait(true);
         }
 
         public async Task UpdateAuthor(int id, AuthorDto model)
         {
-            Author? author = await _getAuthorById(id).ConfigureAwait(true);
-
-            // Validation
-            if (model.Name != author.Name && await _dbContext.Authors.AnyAsync(x => x.Name == model.Name))
-                throw new Exception($"An author with the name {model.Name} already exists.");
+            Author? author = await GetAuthorById(id).ConfigureAwait(true);
 
             // copy model to author and save
             _mapper.Map(model, author);
@@ -129,7 +125,7 @@ namespace PostgreSQL.Demo.API.Services
         /// <param name="id">Author ID</param>
         /// <param name="includeBooks">True to include books</param>
         /// <returns>A single author</returns>
-        private async Task<Author> _getAuthorById(int id, bool includeBooks = false)
+        private async Task<Author> GetAuthorById(int id, bool includeBooks = false)
         {
             if (includeBooks)
             {

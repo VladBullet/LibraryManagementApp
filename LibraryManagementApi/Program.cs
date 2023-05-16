@@ -7,17 +7,17 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddDbContext<LibraryContext>(options =>
+{
+    options.UseNpgsql(builder.Configuration.GetConnectionString("PostgreSQL"));
+});
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddSwaggerGen();
-builder.Services.AddDbContext<LibraryContext>(options =>
-{
-    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-    options.UseNpgsql(connectionString);
-});
+
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
 // authentication and authorization
