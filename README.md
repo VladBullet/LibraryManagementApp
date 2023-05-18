@@ -7,7 +7,6 @@ Credentials:
 | ------------- |:-------------:| :-----:|
 | admin | pass | admin / librarian |
 | john.snow | throne | regular user |
-| jane.austen | pride | author |
 
 # Specifications of this API (Technologies used)
  - .Net Core 6 (3.0+)
