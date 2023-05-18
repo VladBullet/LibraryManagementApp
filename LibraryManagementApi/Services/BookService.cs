@@ -40,6 +40,8 @@ namespace PostgreSQL.Demo.API.Services
         /// </summary>
         /// <param name="id">Id of the book to delete</param>
         Task DeleteBook(int id);
+
+        Task<IEnumerable<Book>> GetAvailableBooksAsync();
     }
 
     public class BookService : IBookService
@@ -56,7 +58,14 @@ namespace PostgreSQL.Demo.API.Services
         public async Task<int> CreateBook(BookDto model)
         {
             // Validate new book
-            if (await _dbContext.Books.AnyAsync(x => x.Name == model.Name && x.AuthorName == model.AuthorName))
+            var bookAuthor = _dbContext.Authors.FirstOrDefault(x => x.Name == model.AuthorName);
+            if (bookAuthor == null) 
+            {
+                // we need to add the author
+                _dbContext.Authors.Add(new Author { Name = model.AuthorName });
+
+            }
+            if (await _dbContext.Books.AnyAsync(x => x.Title == model.Title && x.AuthorId == bookAuthor.Id))
                 throw new Exception($"A book with the same name and author already exist in the database!");
 
             // Map model to new book object
@@ -112,6 +121,11 @@ namespace PostgreSQL.Demo.API.Services
             }
 
             return book;
+        }
+
+        public async Task<IEnumerable<Book>> GetAvailableBooksAsync()
+        {
+            return await _dbContext.Books.Where(book => book.Stock > 0).ToListAsync();
         }
     }
 }

@@ -11,5 +11,6 @@ namespace LibraryManagementApi.Models
         public string Username { get; set; }
         public string Password { get; set; }
         public string Role { get; set; }
+        public bool BookLendsFlag { get; set; } // blocks the user from renting books because he / she has one or more books late for return
     }
 }
