@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using LibraryManagementApi.Data.Models;
 using LibraryManagementApi.Dto;
 using LibraryManagementApi.Models;
 using System.Net;

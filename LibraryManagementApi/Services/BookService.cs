@@ -40,8 +40,8 @@ namespace PostgreSQL.Demo.API.Services
         /// </summary>
         /// <param name="id">Id of the book to delete</param>
         Task DeleteBook(int id);
-
         Task<IEnumerable<Book>> GetAvailableBooksAsync();
+        Task<IEnumerable<Book>> GetBooksByIds(IEnumerable<int> bookIds);
     }
 
     public class BookService : IBookService
@@ -59,7 +59,7 @@ namespace PostgreSQL.Demo.API.Services
         {
             // Validate new book
             var bookAuthor = _dbContext.Authors.FirstOrDefault(x => x.Name == model.AuthorName);
-            if (bookAuthor == null) 
+            if (bookAuthor == null)
             {
                 // we need to add the author
                 _dbContext.Authors.Add(new Author { Name = model.AuthorName });
@@ -126,6 +126,12 @@ namespace PostgreSQL.Demo.API.Services
         public async Task<IEnumerable<Book>> GetAvailableBooksAsync()
         {
             return await _dbContext.Books.Where(book => book.Stock > 0).ToListAsync();
+        }
+        public async Task<IEnumerable<Book>> GetBooksByIds(IEnumerable<int> bookIds)
+        {
+            return await _dbContext.Books
+                .Where(book => bookIds.Contains(book.Id))
+                .ToListAsync();
         }
     }
 }

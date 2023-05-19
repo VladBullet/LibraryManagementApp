@@ -12,6 +12,7 @@ namespace LibraryManagementApi.Services
 
         Task<Result<IEnumerable<int>>> ReturnBooks(int userId, IEnumerable<int> bookIds);
         Task<bool> HasRentalOverdue(int userId);
+        Task<IEnumerable<Book>> GetCurrentlyRentedBooks(int userId);
     }
 
     public class RentService : IRentService
@@ -128,13 +129,24 @@ namespace LibraryManagementApi.Services
             return Result<IEnumerable<int>>.Success(bookIds);
         }
 
-
         public async Task<bool> HasRentalOverdue(int userId)
         {
             var overdueRentalsCount = await _dbContext.Rentals.CountAsync(rental => rental.UserId == userId && rental.DateStart.AddDays(30).Date < DateTime.Now.Date && rental.ReturnedDate == null);
             if (overdueRentalsCount == 0)
                 return true;
             return false;
+        }
+
+        public async Task<IEnumerable<Book>> GetCurrentlyRentedBooks(int userId)
+        {
+            var rentedBookIds = await _dbContext.Rentals
+                .Where(r => r.UserId == userId && r.ReturnedDate == null)
+                .Select(r => r.BookId)
+                .ToListAsync();
+
+            var rentedBooks = await _bookService.GetBooksByIds(rentedBookIds);
+
+            return rentedBooks;
         }
     }
 }

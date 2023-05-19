@@ -1,9 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using AutoMapper;
 using LibraryManagementApi.Dto;
+using LibraryManagementApi.Helpers_Extensions;
 using LibraryManagementApi.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration.UserSecrets;
 
 namespace LibraryManagementApi.Controllers
 {
@@ -13,10 +16,12 @@ namespace LibraryManagementApi.Controllers
     public class BookRentalController : ControllerBase
     {
         private readonly IRentService _rentService;
+        private readonly IMapper _mapper;
 
-        public BookRentalController(IRentService rentService)
+        public BookRentalController(IRentService rentService, IMapper mapper)
         {
             _rentService = rentService;
+            _mapper = mapper;
         }
 
         [HttpPost("rent")]
@@ -50,6 +55,22 @@ namespace LibraryManagementApi.Controllers
         {
             var hasOverdue = await _rentService.HasRentalOverdue(userId);
             return Ok(hasOverdue);
+        }
+
+        [HttpGet("myRentedBooks")]
+        public async Task<IActionResult> MyRentedBooks()
+        {
+            try
+            {
+                var userId = int.Parse(Helpers.GetClaimValue(User, "Id"));
+                var rentedBooks = await _rentService.GetCurrentlyRentedBooks(userId);
+                var model = _mapper.Map<IEnumerable<BookDto>>(rentedBooks);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
     }
 }
