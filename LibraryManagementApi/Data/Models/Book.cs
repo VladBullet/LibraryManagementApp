@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.EntityFrameworkCore.Storage;
+using System.Text.Json.Serialization;
 
 namespace LibraryManagementApi.Models
 {

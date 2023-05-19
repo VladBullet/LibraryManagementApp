@@ -62,14 +62,15 @@ namespace LibraryManagementApi.Controllers
         {
             try
             {
-                var userId = int.Parse(Helpers.GetClaimValue(User, "Id"));
+                var userId = int.Parse(Helpers.GetClaimValue(User, "UserId"));
                 var rentedBooks = await _rentService.GetCurrentlyRentedBooks(userId);
                 var model = _mapper.Map<IEnumerable<BookDto>>(rentedBooks);
+                return Ok(model);
             }
-            catch (Exception)
+            catch (Exception e)
             {
-
-                throw;
+                Console.WriteLine($"An unhandled exception occured: {e.Message}");
+                return BadRequest(e.Message);
             }
         }
     }

@@ -1,8 +1,10 @@
-﻿using LibraryManagementApi.Dto;
+﻿using LibraryManagementApi;
+using LibraryManagementApi.Dto;
 using LibraryManagementApi.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PostgreSQL.Demo.API.Services;
+using System.Linq.Expressions;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -21,23 +23,38 @@ namespace PostgreSQL.Demo.API.Controllers
         }
 
         // GET: api/<AuthorController>
-        [HttpGet]
+        [HttpGet("getAllAuthors")]
         public async Task<IActionResult> GetAllAuthors()
         {
             IEnumerable<Author> authors = await _authorService.GetAllAuthorsAsync();
             return Ok(authors);
         }
 
-        // GET api/<AuthorController>/5
-        [HttpGet("{id}")]
+        [HttpGet("getAuthorById/{id}")]
         public async Task<IActionResult> GetAuthorById(int id, bool includeBooks = false)
         {
             Author author = await _authorService.GetAuthorByIdAsync(id, includeBooks);
             return Ok(author);
         }
 
+
+        [HttpGet("getAuthorsByName/{name}")]
+        public async Task<IActionResult> GetAuthorsByName(string name, bool includeBooks = false)
+        {
+            try
+            {
+                var authors = await _authorService.GetAuthorsByNameAsync(name, includeBooks);
+                return Ok(authors);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
         // POST api/<AuthorController>
-        [HttpPost]
+        [Authorize(Policy = AuthorizationPolicies.Admin)]
+        [HttpPost("createAuthor")]
         public async Task<IActionResult> CreateAuthor(AuthorDto model)
         {
             int authorId = await _authorService.CreateAuthor(model);
@@ -51,7 +68,8 @@ namespace PostgreSQL.Demo.API.Controllers
         }
 
         // PUT api/<AuthorController>/5
-        [HttpPut("{id}")]
+        [Authorize(Policy = AuthorizationPolicies.Admin)]
+        [HttpPut("updateAuthor/{id}")]
         public async Task<IActionResult> UpdateAuthor(int id, AuthorDto model)
         {
             await _authorService.UpdateAuthor(id, model);
@@ -60,7 +78,8 @@ namespace PostgreSQL.Demo.API.Controllers
         }
 
         // DELETE api/<AuthorController>/5
-        [HttpDelete("{id}")]
+        [Authorize(Policy = AuthorizationPolicies.Admin)]
+        [HttpDelete("deleteAuthor/{id}")]
         public async Task<IActionResult> DeleteAuthor(int id)
         {
             await _authorService.DeleteAuthor(id);

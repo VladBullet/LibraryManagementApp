@@ -9,6 +9,6 @@ namespace LibraryManagementApi.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; internal set; }
         public string Name { get; internal set; }
-        public virtual IEnumerable<Book> Books { get; internal set; }
+        public virtual List<Book> Books { get; internal set; }
     }
 }

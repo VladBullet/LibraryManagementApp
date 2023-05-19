@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using LibraryManagementApi;
 using LibraryManagementApi.Dto;
 using LibraryManagementApi.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -22,15 +23,21 @@ namespace PostgreSQL.Demo.API.Controllers
         }
 
         // GET: api/<BooksController>
-        [HttpGet]
+        [HttpGet("getAllBooks")]
         public async Task<IActionResult> GetAllBooks()
         {
             IEnumerable<Book> books = await _bookService.GetAllBooksAsync();
             return Ok(books);
         }
 
+        [HttpGet("getFilteredBooks/{title}")]
+        public async Task<IActionResult> GetBooksFilteredByTitle(string title, bool includeAuthor = true)
+        {
+            return Ok(_bookService.GetBooksFilteredByTitle(title, includeAuthor));
+        }
+
         // GET api/<BooksController>/5
-        [HttpGet("{id}")]
+        [HttpGet("getBookById/{id}")]
         public async Task<IActionResult> GetBookById(int id)
         {
             Book book = await _bookService.GetBookByIdAsync(id);
@@ -38,7 +45,8 @@ namespace PostgreSQL.Demo.API.Controllers
         }
 
         // POST api/<BooksController>
-        [HttpPost]
+        [Authorize(Policy = AuthorizationPolicies.Admin)]
+        [HttpPost("createBook")]
         public async Task<IActionResult> CreateBook(BookDto model)
         {
             int book = await _bookService.CreateBook(model);
@@ -52,7 +60,8 @@ namespace PostgreSQL.Demo.API.Controllers
         }
 
         // PUT api/<BooksController>/5
-        [HttpPut("{id}")]
+        [Authorize(Policy = AuthorizationPolicies.Admin)]
+        [HttpPut("updateBook/{id}")]
         public async Task<IActionResult> UpdateBook(int id, BookDto model)
         {
             await _bookService.UpdateBook(id, model);
@@ -60,7 +69,8 @@ namespace PostgreSQL.Demo.API.Controllers
         }
 
         // DELETE api/<BooksController>/5
-        [HttpDelete("{id}")]
+        [Authorize(Policy = AuthorizationPolicies.Admin)]
+        [HttpDelete("deleteBook/{id}")]
         public async Task<IActionResult> DeleteBook(int id)
         {
             await _bookService.DeleteBook(id);

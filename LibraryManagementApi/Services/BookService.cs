@@ -1,9 +1,12 @@
 ﻿using AutoMapper;
+using Dapper;
 using LibraryManagementApi;
 using LibraryManagementApi.Dto;
 using LibraryManagementApi.Models;
 using Microsoft.EntityFrameworkCore;
-
+using Npgsql;
+using System.Linq;
+using System.Xml.Linq;
 
 namespace PostgreSQL.Demo.API.Services
 {
@@ -42,17 +45,20 @@ namespace PostgreSQL.Demo.API.Services
         Task DeleteBook(int id);
         Task<IEnumerable<Book>> GetAvailableBooksAsync();
         Task<IEnumerable<Book>> GetBooksByIds(IEnumerable<int> bookIds);
+        Task<IEnumerable<Book>> GetBooksFilteredByTitle(string title, bool includeAuthors);
     }
 
     public class BookService : IBookService
     {
         private LibraryContext _dbContext;
         private IMapper _mapper;
+        private readonly IConfiguration _config;
 
-        public BookService(LibraryContext dbContext, IMapper mapper)
+        public BookService(LibraryContext dbContext, IMapper mapper, IConfiguration config)
         {
             _dbContext = dbContext;
             _mapper = mapper;
+            _config = config;
         }
 
         public async Task<int> CreateBook(BookDto model)
@@ -88,7 +94,7 @@ namespace PostgreSQL.Demo.API.Services
 
         public async Task<IEnumerable<Book>> GetAllBooksAsync()
         {
-            return await _dbContext.Books
+            return await _dbContext.Books.Include(b => b.Author)
                 .ToListAsync()
                 .ConfigureAwait(true);
         }
@@ -132,6 +138,53 @@ namespace PostgreSQL.Demo.API.Services
             return await _dbContext.Books
                 .Where(book => bookIds.Contains(book.Id))
                 .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Book>> GetBooksFilteredByTitle(string title, bool includeAuthors)
+        {
+            using (var connection = new NpgsqlConnection(_config.GetConnectionString("PostgreSQL")))
+            {
+                connection.Open();
+
+                var normalizedTitles = title.Split(' ').Select(n => $"%{n.ToLower()}%").ToArray();
+
+                string sql = @"SELECT b.""Id"", b.""Title"", b.""AuthorId"", b.""Stock"",
+                                      a.""Id"", a.""Name"" 
+                                FROM ""public"".""Books"" b
+                                LEFT JOIN ""public"".""Authors"" a ON a.""Id"" = b.""AuthorId""
+                                WHERE LOWER(b.""Title"") LIKE ANY(@namePatterns)";
+
+                if (!includeAuthors)
+                {
+                    sql = @"SELECT b.""Id"", b.""Title"", b.""AuthorId"", b.""Stock"" FROM ""public"".""Books"" b
+                WHERE LOWER(b.""Title"") LIKE ANY(@namePatterns)";
+                    return await connection.QueryAsync<Book>(sql, new { namePatterns = normalizedTitles });
+                }
+
+                var lookup = new Dictionary<int, Book>();
+                var filteredBooks = await connection.QueryAsync<Book, Author, Book>(
+                   sql,
+                   (book, author) =>
+                   {
+                       if (!lookup.TryGetValue(book.Id, out var existingBook))
+                       {
+                           existingBook = book;
+                           lookup.Add(existingBook.Id, existingBook);
+                       }
+
+                       if (includeAuthors && author != null)
+                       {
+                           existingBook.Author = author;
+                       }
+
+                       return existingBook;
+                   },
+                   new { titlePatterns = normalizedTitles },
+                   splitOn: "Id")
+                   .ConfigureAwait(true);
+
+                return filteredBooks.Distinct().ToList();
+            }
         }
     }
 }
