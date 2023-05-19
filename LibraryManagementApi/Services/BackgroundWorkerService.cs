@@ -7,15 +7,11 @@
 
     public class BackgroundWorkerService : BackgroundService
     {
-        private readonly LibraryContext _dbContext;
-        private readonly IRentService _rentService;
-        private readonly IUserService _userService;
+        private readonly IServiceProvider _serviceProvider;
 
-        public BackgroundWorkerService(LibraryContext dbContext, IRentService rentService, IUserService userService)
+        public BackgroundWorkerService(IServiceProvider serviceProvider)
         {
-            _dbContext = dbContext;
-            _rentService = rentService;
-            _userService = userService;
+            _serviceProvider = serviceProvider;
         }
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
@@ -23,19 +19,25 @@
             {
                 while (!stoppingToken.IsCancellationRequested)
                 {
-                    Console.WriteLine("Background worker is running...");
-                    var users = await _userService.GetAllUsers();
-                    foreach (var user in users)
+                    using (var scope = _serviceProvider.CreateScope())
                     {
-                        if (await _rentService.HasRentalOverdue(user.Id))
-                        {
-                            user.BookRentalOverdue = true;
-                            await _userService.UpdateUser(user);
-                        }
-                    }
+                        var _rentService = scope.ServiceProvider.GetRequiredService<IRentService>();
+                        var _userService = scope.ServiceProvider.GetRequiredService<IUserService>();
 
-                    // Wait for a specific interval before executing the next iteration
-                    await Task.Delay(TimeSpan.FromHours(24), stoppingToken);
+                        Console.WriteLine("Background worker is running...");
+                        var users = await _userService.GetAllUsers();
+                        foreach (var user in users)
+                        {
+                            if (await _rentService.HasRentalOverdue(user.Id))
+                            {
+                                user.BookRentalOverdue = true;
+                                await _userService.UpdateUser(user);
+                            }
+                        }
+
+                        // Wait for a specific interval before executing the next iteration
+                        await Task.Delay(TimeSpan.FromHours(24), stoppingToken);
+                    }
                 }
             }
             catch (Exception ex)

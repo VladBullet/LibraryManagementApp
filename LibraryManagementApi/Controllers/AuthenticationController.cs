@@ -10,11 +10,11 @@ using System.Text;
 
 namespace LibraryManagementApi.Controllers
 {
-    public class SecurityController : Controller
+    public class AuthenticationController : ControllerBase
     {
         private IConfiguration _config;
         private LibraryContext _db;
-        public SecurityController(LibraryContext context, IConfiguration config)
+        public AuthenticationController(LibraryContext context, IConfiguration config)
         {
             _db = context;
             _config = config;

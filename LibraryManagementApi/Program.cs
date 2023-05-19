@@ -16,13 +16,14 @@ builder.Services.AddScoped<IBookService, BookService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IRentService, RentService>();
 
-builder.Services.AddHostedService<BackgroundWorkerService>();
 
 
 builder.Services.AddDbContext<LibraryContext>(options =>
 {
     options.UseNpgsql(builder.Configuration.GetConnectionString("PostgreSQL"));
 });
+
+builder.Services.AddHostedService<BackgroundWorkerService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
