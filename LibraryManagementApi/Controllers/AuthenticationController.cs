@@ -51,7 +51,7 @@ namespace LibraryManagementApi.Controllers
                 new Claim("UserId",userInfo.Id.ToString()),
                 new Claim("Username",userInfo.Username),
                 new Claim("BookRentalOverdue",userInfo.BookRentalOverdue.ToString()),
-                new Claim("Role",userInfo.Role),
+                new Claim(ClaimTypes.Role,userInfo.Role),
 
             };
             var token = new JwtSecurityToken(_config["Jwt:Issuer"],

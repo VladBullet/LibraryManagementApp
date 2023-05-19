@@ -7,6 +7,8 @@ using Microsoft.OpenApi.Models;
 using PostgreSQL.Demo.API.Services;
 using System.Reflection;
 using System.Text;
+using System.Text.Json.Serialization;
+using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,7 +18,10 @@ builder.Services.AddScoped<IBookService, BookService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IRentService, RentService>();
 
-
+builder.Services.AddLogging(builder =>
+{
+    builder.AddConsole();
+});
 
 builder.Services.AddDbContext<LibraryContext>(options =>
 {
@@ -25,7 +30,11 @@ builder.Services.AddDbContext<LibraryContext>(options =>
 
 builder.Services.AddHostedService<BackgroundWorkerService>();
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+    options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+});
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());

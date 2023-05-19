@@ -27,7 +27,7 @@ namespace LibraryManagementApi.Controllers
         [HttpPost("rent")]
         public async Task<IActionResult> RentBooks([FromBody] BookRentalRequestDto rentalDto)
         {
-            var result = await _rentService.RentBooks(rentalDto.UserId, rentalDto.BookIds);
+            var result = await _rentService.RentBooks(int.Parse(Helpers.GetClaimValue(User, "UserId")), rentalDto.BookIds);
 
             if (result.IsSuccess)
             {
@@ -40,7 +40,7 @@ namespace LibraryManagementApi.Controllers
         [HttpPost("return")]
         public async Task<IActionResult> ReturnBooks([FromBody] BookRentalRequestDto rentalDto)
         {
-            var result = await _rentService.ReturnBooks(rentalDto.UserId, rentalDto.BookIds);
+            var result = await _rentService.ReturnBooks(int.Parse(Helpers.GetClaimValue(User, "UserId")), rentalDto.BookIds);
 
             if (result.IsSuccess)
             {
@@ -64,8 +64,7 @@ namespace LibraryManagementApi.Controllers
             {
                 var userId = int.Parse(Helpers.GetClaimValue(User, "UserId"));
                 var rentedBooks = await _rentService.GetCurrentlyRentedBooks(userId);
-                var model = _mapper.Map<IEnumerable<BookDto>>(rentedBooks);
-                return Ok(model);
+                return Ok(rentedBooks);
             }
             catch (Exception e)
             {

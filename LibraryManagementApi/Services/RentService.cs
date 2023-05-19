@@ -132,7 +132,7 @@ namespace LibraryManagementApi.Services
         public async Task<bool> HasRentalOverdue(int userId)
         {
             var overdueRentalsCount = await _dbContext.Rentals.CountAsync(rental => rental.UserId == userId && rental.DateStart.AddDays(30).Date < DateTime.Now.Date && rental.ReturnedDate == null);
-            if (overdueRentalsCount == 0)
+            if (overdueRentalsCount > 0)
                 return true;
             return false;
         }

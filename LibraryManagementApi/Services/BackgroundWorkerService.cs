@@ -24,7 +24,7 @@
                         var _rentService = scope.ServiceProvider.GetRequiredService<IRentService>();
                         var _userService = scope.ServiceProvider.GetRequiredService<IUserService>();
 
-                        Console.WriteLine("Background worker is running...");
+                        Console.WriteLine("Background worker is STARTED work...");
                         var users = await _userService.GetAllUsers();
                         foreach (var user in users)
                         {
@@ -34,6 +34,7 @@
                                 await _userService.UpdateUser(user);
                             }
                         }
+                        Console.WriteLine("Background worker is FINISHED work...");
 
                         // Wait for a specific interval before executing the next iteration
                         await Task.Delay(TimeSpan.FromHours(24), stoppingToken);

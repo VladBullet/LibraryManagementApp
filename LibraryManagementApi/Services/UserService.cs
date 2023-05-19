@@ -25,17 +25,17 @@ namespace LibraryManagementApi.Services
 
         public async Task<User> GetUserById(int id)
         {
-            return await _dbContext.Users.FindAsync(id);
+            return await _dbContext.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == id);
         }
 
         public async Task<User> GetUserByUsername(string username)
         {
-            return await _dbContext.Users.FirstOrDefaultAsync(u => u.Username == username);
+            return await _dbContext.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Username == username);
         }
 
         public async Task<IEnumerable<User>> GetAllUsers()
         {
-            return await _dbContext.Users.ToListAsync();
+            return await _dbContext.Users.AsNoTracking().ToListAsync();
         }
 
         public async Task CreateUser(User user)

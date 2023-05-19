@@ -137,9 +137,11 @@ namespace PostgreSQL.Demo.API.Services
         }
         public async Task<IEnumerable<Book>> GetBooksByIds(IEnumerable<int> bookIds)
         {
-            return await _dbContext.Books
+            var books = await _dbContext.Books
                 .Where(book => bookIds.Contains(book.Id))
+                .Include(book => book.Author)
                 .ToListAsync();
+            return books;
         }
 
         public async Task<IEnumerable<Book>> GetBooksFilteredByTitle(string title, bool includeAuthors)
