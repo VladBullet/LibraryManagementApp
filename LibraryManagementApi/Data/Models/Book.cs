@@ -13,6 +13,6 @@ namespace LibraryManagementApi.Models
         public string Title { get; internal set; }
         public int Stock { get; internal set; }
         public int AuthorId { get; internal set; }
-        public virtual Author Author { get; internal set; }
+        public Author Author { get; internal set; }
     }
 }

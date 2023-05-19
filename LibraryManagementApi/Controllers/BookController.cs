@@ -33,7 +33,8 @@ namespace PostgreSQL.Demo.API.Controllers
         [HttpGet("getFilteredBooks/{title}")]
         public async Task<IActionResult> GetBooksFilteredByTitle(string title, bool includeAuthor = true)
         {
-            return Ok(_bookService.GetBooksFilteredByTitle(title, includeAuthor));
+            var books = await _bookService.GetBooksFilteredByTitle(title, includeAuthor);
+            return Ok(books);
         }
 
         // GET api/<BooksController>/5

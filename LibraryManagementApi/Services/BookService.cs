@@ -53,12 +53,14 @@ namespace PostgreSQL.Demo.API.Services
         private LibraryContext _dbContext;
         private IMapper _mapper;
         private readonly IConfiguration _config;
+        private readonly IAuthorService _authorService;
 
-        public BookService(LibraryContext dbContext, IMapper mapper, IConfiguration config)
+        public BookService(LibraryContext dbContext, IMapper mapper, IConfiguration config, IAuthorService authorService)
         {
             _dbContext = dbContext;
             _mapper = mapper;
             _config = config;
+            _authorService = authorService;
         }
 
         public async Task<int> CreateBook(BookDto model)
@@ -148,42 +150,18 @@ namespace PostgreSQL.Demo.API.Services
 
                 var normalizedTitles = title.Split(' ').Select(n => $"%{n.ToLower()}%").ToArray();
 
-                string sql = @"SELECT b.""Id"", b.""Title"", b.""AuthorId"", b.""Stock"",
-                                      a.""Id"", a.""Name"" 
-                                FROM ""public"".""Books"" b
-                                LEFT JOIN ""public"".""Authors"" a ON a.""Id"" = b.""AuthorId""
-                                WHERE LOWER(b.""Title"") LIKE ANY(@namePatterns)";
-
-                if (!includeAuthors)
-                {
-                    sql = @"SELECT b.""Id"", b.""Title"", b.""AuthorId"", b.""Stock"" FROM ""public"".""Books"" b
+                var sql = @"SELECT b.""Id"", b.""Title"", b.""AuthorId"", b.""Stock"" FROM ""public"".""Books"" b
                 WHERE LOWER(b.""Title"") LIKE ANY(@namePatterns)";
-                    return await connection.QueryAsync<Book>(sql, new { namePatterns = normalizedTitles });
+
+                var filteredBooks = await connection.QueryAsync<Book>(sql, new { namePatterns = normalizedTitles });
+                if (includeAuthors)
+                {
+                    foreach (var book in filteredBooks)
+                    {
+                        book.Author = await _authorService.GetAuthorByIdAsync(book.AuthorId);
+                    }
                 }
-
-                var lookup = new Dictionary<int, Book>();
-                var filteredBooks = await connection.QueryAsync<Book, Author, Book>(
-                   sql,
-                   (book, author) =>
-                   {
-                       if (!lookup.TryGetValue(book.Id, out var existingBook))
-                       {
-                           existingBook = book;
-                           lookup.Add(existingBook.Id, existingBook);
-                       }
-
-                       if (includeAuthors && author != null)
-                       {
-                           existingBook.Author = author;
-                       }
-
-                       return existingBook;
-                   },
-                   new { titlePatterns = normalizedTitles },
-                   splitOn: "Id")
-                   .ConfigureAwait(true);
-
-                return filteredBooks.Distinct().ToList();
+                return filteredBooks;
             }
         }
     }
