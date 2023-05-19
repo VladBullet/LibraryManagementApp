@@ -1,4 +1,5 @@
 ﻿using LibraryManagementApi.Dto;
+using LibraryManagementApi.Helpers_Extensions;
 using LibraryManagementApi.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -68,7 +69,7 @@ namespace LibraryManagementApi.Controllers
             User user = null;
 
             //Validate the User Credentials    
-            User? dbUser = _db.Users.FirstOrDefault(x => x.Username == login.Username && x.Password == login.Password);
+            User? dbUser = _db.Users.FirstOrDefault(x => x.Username == login.Username && x.Password == login.Password.ToMd5());
             if (dbUser != null)
             {
                 user = new User { Id = dbUser.Id, Username = dbUser.Username, Role = dbUser.Role, BookRentalOverdue = dbUser.BookRentalOverdue };
