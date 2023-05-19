@@ -47,7 +47,6 @@ namespace LibraryManagementApi.Services
 
         public async Task UpdateUser(User user)
         {
-            user.Password = user.Password.ToMd5();
             _dbContext.Users.Update(user);
             await _dbContext.SaveChangesAsync();
         }
