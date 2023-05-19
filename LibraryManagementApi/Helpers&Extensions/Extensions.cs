@@ -22,4 +22,5 @@ namespace LibraryManagementApi.Helpers_Extensions
                 return stringBuilder.ToString();
             }
         }
+    }
 }
