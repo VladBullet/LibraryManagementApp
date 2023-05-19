@@ -113,16 +113,6 @@ namespace LibraryManagementApi.Migrations
                         },
                         new
                         {
-                            Id = 10,
-                            Name = "J.R.R. Tolkien"
-                        },
-                        new
-                        {
-                            Id = 11,
-                            Name = "Jane Austen"
-                        },
-                        new
-                        {
                             Id = 12,
                             Name = "J.K. Rowling"
                         },
@@ -261,16 +251,9 @@ namespace LibraryManagementApi.Migrations
                         new
                         {
                             Id = 10,
-                            AuthorId = 10,
+                            AuthorId = 13,
                             Stock = 12,
                             Title = "The Lord of the Rings"
-                        },
-                        new
-                        {
-                            Id = 11,
-                            AuthorId = 11,
-                            Stock = 4,
-                            Title = "Pride and Prejudice"
                         },
                         new
                         {

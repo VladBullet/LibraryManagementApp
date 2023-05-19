@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace LibraryManagementApi.Migrations
 {
     [DbContext(typeof(LibraryContext))]
-    [Migration("20230518154719_AddSeedConfiguration")]
+    [Migration("20230519090146_AddSeedConfiguration")]
     partial class AddSeedConfiguration
     {
         /// <inheritdoc />
@@ -113,16 +113,6 @@ namespace LibraryManagementApi.Migrations
                         {
                             Id = 9,
                             Name = "Aldous Huxley"
-                        },
-                        new
-                        {
-                            Id = 10,
-                            Name = "J.R.R. Tolkien"
-                        },
-                        new
-                        {
-                            Id = 11,
-                            Name = "Jane Austen"
                         },
                         new
                         {
@@ -264,16 +254,9 @@ namespace LibraryManagementApi.Migrations
                         new
                         {
                             Id = 10,
-                            AuthorId = 10,
+                            AuthorId = 13,
                             Stock = 12,
                             Title = "The Lord of the Rings"
-                        },
-                        new
-                        {
-                            Id = 11,
-                            AuthorId = 11,
-                            Stock = 4,
-                            Title = "Pride and Prejudice"
                         },
                         new
                         {

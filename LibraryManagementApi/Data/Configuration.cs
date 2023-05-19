@@ -23,7 +23,6 @@ namespace LibraryManagementApi.Data
                 new Author() { Id = 7, Name = "J.D. Salinger" },
                 new Author() { Id = 8, Name = "Virginia Woolf" },
                 new Author() { Id = 9, Name = "Aldous Huxley" },
-                new Author() { Id = 10, Name = "J.R.R. Tolkien" },
                 new Author() { Id = 12, Name = "J.K. Rowling" },
                 new Author() { Id = 13, Name = "J.R.R. Tolkien" },
                 new Author() { Id = 14, Name = "Lewis Carroll" },
@@ -45,8 +44,7 @@ namespace LibraryManagementApi.Data
                 new Book() { Id = 7, AuthorId = 7, Title = "The Catcher in the Rye", Stock = 5 },
                 new Book() { Id = 8, AuthorId = 8, Title = "To the Lighthouse", Stock = 7 },
                 new Book() { Id = 9, AuthorId = 9, Title = "Brave New World", Stock = 9 },
-                new Book() { Id = 10, AuthorId = 10, Title = "The Lord of the Rings", Stock = 12 },
-                new Book() { Id = 11, AuthorId = 11, Title = "Pride and Prejudice", Stock = 4 },
+                new Book() { Id = 10, AuthorId = 13, Title = "The Lord of the Rings", Stock = 12 },
                 new Book() { Id = 12, AuthorId = 12, Title = "Harry Potter and the Sorcerer's Stone", Stock = 15 },
                 new Book() { Id = 13, AuthorId = 13, Title = "The Hobbit", Stock = 11 },
                 new Book() { Id = 14, AuthorId = 14, Title = "Alice's Adventures in Wonderland", Stock = 6 },
@@ -58,7 +56,7 @@ namespace LibraryManagementApi.Data
                 new Book() { Id = 20, AuthorId = 20, Title = "Wuthering Heights", Stock = 6 }
                  );
 
-            // Lends
+            // BookRentals
         }
     }
 }

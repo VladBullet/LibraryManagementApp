@@ -26,8 +26,6 @@ namespace LibraryManagementApi.Migrations
                     { 7, "J.D. Salinger" },
                     { 8, "Virginia Woolf" },
                     { 9, "Aldous Huxley" },
-                    { 10, "J.R.R. Tolkien" },
-                    { 11, "Jane Austen" },
                     { 12, "J.K. Rowling" },
                     { 13, "J.R.R. Tolkien" },
                     { 14, "Lewis Carroll" },
@@ -62,8 +60,7 @@ namespace LibraryManagementApi.Migrations
                     { 7, 7, 5, "The Catcher in the Rye" },
                     { 8, 8, 7, "To the Lighthouse" },
                     { 9, 9, 9, "Brave New World" },
-                    { 10, 10, 12, "The Lord of the Rings" },
-                    { 11, 11, 4, "Pride and Prejudice" },
+                    { 10, 13, 12, "The Lord of the Rings" },
                     { 12, 12, 15, "Harry Potter and the Sorcerer's Stone" },
                     { 13, 13, 11, "The Hobbit" },
                     { 14, 14, 6, "Alice's Adventures in Wonderland" },
@@ -128,11 +125,6 @@ namespace LibraryManagementApi.Migrations
                 table: "Books",
                 keyColumn: "Id",
                 keyValue: 10);
-
-            migrationBuilder.DeleteData(
-                table: "Books",
-                keyColumn: "Id",
-                keyValue: 11);
 
             migrationBuilder.DeleteData(
                 table: "Books",
@@ -233,16 +225,6 @@ namespace LibraryManagementApi.Migrations
                 table: "Authors",
                 keyColumn: "Id",
                 keyValue: 9);
-
-            migrationBuilder.DeleteData(
-                table: "Authors",
-                keyColumn: "Id",
-                keyValue: 10);
-
-            migrationBuilder.DeleteData(
-                table: "Authors",
-                keyColumn: "Id",
-                keyValue: 11);
 
             migrationBuilder.DeleteData(
                 table: "Authors",

@@ -27,6 +27,10 @@ namespace LibraryManagementApi.Controllers
             {
                 IActionResult response = Unauthorized();
                 var user = await AuthenticateUserAsync(login);
+                if (user == null)
+                {
+                    return BadRequest("Username or password incorrect!");
+                }
 
                 if (user != null)
                 {
@@ -41,15 +45,24 @@ namespace LibraryManagementApi.Controllers
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+            var claims = new List<Claim>()
+            {
+                new Claim("UserId",userInfo.Id.ToString()),
+                new Claim("Username",userInfo.Username),
+                new Claim("BookRentalOverdue",userInfo.BookRentalOverdue.ToString()),
+                new Claim("Role",userInfo.Role),
 
+            };
             var token = new JwtSecurityToken(_config["Jwt:Issuer"],
               _config["Jwt:Issuer"],
-              null,
+              claims: claims,
               expires: DateTime.Now.AddMinutes(60),
-              signingCredentials: credentials);
+              signingCredentials: credentials
+              );
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
+
         private async Task<User> AuthenticateUserAsync(UserDto login)
         {
             User user = null;
@@ -58,7 +71,7 @@ namespace LibraryManagementApi.Controllers
             User? dbUser = _db.Users.FirstOrDefault(x => x.Username == login.Username && x.Password == login.Password);
             if (dbUser != null)
             {
-                user = new User { Username = dbUser.Username, Password = dbUser.Password, Role = dbUser.Role };
+                user = new User { Id = dbUser.Id, Username = dbUser.Username, Role = dbUser.Role, BookRentalOverdue = dbUser.BookRentalOverdue };
             }
 
             return user;
