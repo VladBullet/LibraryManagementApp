@@ -5,13 +5,13 @@
     using System.Threading;
     using System.Threading.Tasks;
 
-    public class BackgroundWorker : BackgroundService
+    public class BackgroundWorkerService : BackgroundService
     {
         private readonly LibraryContext _dbContext;
         private readonly IRentService _rentService;
         private readonly IUserService _userService;
 
-        public BackgroundWorker(LibraryContext dbContext, IRentService rentService, IUserService userService)
+        public BackgroundWorkerService(LibraryContext dbContext, IRentService rentService, IUserService userService)
         {
             _dbContext = dbContext;
             _rentService = rentService;

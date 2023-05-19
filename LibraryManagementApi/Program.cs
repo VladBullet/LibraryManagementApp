@@ -13,7 +13,10 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddScoped<IAuthorService, AuthorService>();
 builder.Services.AddScoped<IBookService, BookService>();
-builder.Services.AddHostedService<BackgroundWorker>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IRentService, RentService>();
+
+builder.Services.AddHostedService<BackgroundWorkerService>();
 
 
 builder.Services.AddDbContext<LibraryContext>(options =>
@@ -52,7 +55,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy(AuthorizationPolicies.User, policy => policy.RequireAuthenticatedUser().RequireRole(AuthorizationPolicies.User));
-    options.AddPolicy(AuthorizationPolicies.Author, policy => policy.RequireAuthenticatedUser().RequireRole(AuthorizationPolicies.Author));
     options.AddPolicy(AuthorizationPolicies.Admin, policy => policy.RequireAuthenticatedUser().RequireRole(AuthorizationPolicies.Admin));
 });
 
