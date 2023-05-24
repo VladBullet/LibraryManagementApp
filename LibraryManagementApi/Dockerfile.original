@@ -7,10 +7,10 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
-COPY ["LibraryManagementApi.csproj", "./"]
+COPY ["LibraryManagementApi.csproj", "LibraryManagementApi/"]
 RUN dotnet restore "LibraryManagementApi.csproj"
 COPY . .
-WORKDIR "/src/."
+WORKDIR "/src/LibraryManagementApi"
 RUN dotnet build "LibraryManagementApi.csproj" -c Release -o /app/build
 
 FROM build AS publish
