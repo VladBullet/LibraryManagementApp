@@ -1,0 +1,19 @@
+﻿﻿version: '3'
+
+services:
+  app:
+    build:
+      context:  ./
+      dockerfile: LibraryManagementApi/Dockerfile
+  https-portal:
+    image: steveltn/https-portal:1
+    ports:
+      - '80:80'
+      - '443:443'
+    links:
+      - app
+    restart: always
+    environment:
+      #DOMAINS: 'vbsoftware.eu -> http://app:5001'
+      DOMAINS: 'vbsoftware.eu -> http://app:5001, www.vbsoftware.eu => https://vbsoftware.eu'
+      #STAGE: 'production'

@@ -19,4 +19,7 @@ RUN dotnet publish "LibraryManagementApi.csproj" -c Release -o /app/publish /p:U
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+
+ENV ASPNETCORE_URLS http://+:5001
+EXPOSE 5001
 ENTRYPOINT ["dotnet", "LibraryManagementApi.dll"]
