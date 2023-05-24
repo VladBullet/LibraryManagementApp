@@ -13,16 +13,19 @@ namespace LibraryManagementApi.Services
         Task<Result<IEnumerable<int>>> ReturnBooks(int userId, IEnumerable<int> bookIds);
         Task<bool> HasRentalOverdue(int userId);
         Task<IEnumerable<Book>> GetCurrentlyRentedBooks(int userId);
+        Task<User> UpdateUserRentalOverdue(int userId);
     }
 
     public class RentService : IRentService
     {
         private LibraryContext _dbContext;
         private IBookService _bookService;
-        public RentService(LibraryContext db, IBookService bookService)
+        private IUserService _userService;
+        public RentService(LibraryContext db, IBookService bookService, IUserService userService)
         {
             _dbContext = db;
             _bookService = bookService;
+            _userService = userService;
         }
 
         public async Task<Result<IEnumerable<int>>> RentBooks(int userId, IEnumerable<int> bookIds)
@@ -148,5 +151,14 @@ namespace LibraryManagementApi.Services
 
             return rentedBooks;
         }
+
+        public async Task<User> UpdateUserRentalOverdue(int userId)
+        {
+            var user = await _userService.GetUserById(userId);
+            user.BookRentalOverdue = await HasRentalOverdue(userId);
+            await _userService.UpdateUser(user);
+            return user;
+        }
+
     }
 }

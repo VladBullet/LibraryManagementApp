@@ -10,7 +10,7 @@ namespace LibraryManagementApi.Helpers_Extensions
 {
     public static class Helpers
     {
-        public static string GetClaimValue(ClaimsPrincipal user, string claimType)
+        public static string GetClaimValue(this ClaimsPrincipal user, string claimType)
         {
             var value = user.FindFirstValue(claimType);
             return value;

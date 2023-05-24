@@ -28,11 +28,16 @@
                         var users = await _userService.GetAllUsers();
                         foreach (var user in users)
                         {
-                            if (await _rentService.HasRentalOverdue(user.Id))
-                            {
-                                user.BookRentalOverdue = true;
-                                await _userService.UpdateUser(user);
-                            }
+                            await _rentService.UpdateUserRentalOverdue(user.Id);
+                            //if (await _rentService.HasRentalOverdue(user.Id))
+                            //{
+                            //    user.BookRentalOverdue = true;
+                            //}
+                            //else
+                            //{
+                            //    user.BookRentalOverdue = false;
+                            //}
+                            //await _userService.UpdateUser(user);
                         }
                         Console.WriteLine("Background worker is FINISHED work...");
 

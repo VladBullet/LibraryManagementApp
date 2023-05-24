@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using LibraryManagementApi.Dto;
 using LibraryManagementApi.Helpers_Extensions;
+using LibraryManagementApi.Models;
 using LibraryManagementApi.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -16,17 +17,24 @@ namespace LibraryManagementApi.Controllers
     public class BookRentalController : ControllerBase
     {
         private readonly IRentService _rentService;
+        private readonly IUserService _userService;
         private readonly IMapper _mapper;
 
-        public BookRentalController(IRentService rentService, IMapper mapper)
+        public BookRentalController(IRentService rentService, IMapper mapper, IUserService userService)
         {
             _rentService = rentService;
             _mapper = mapper;
+            _userService = userService;
         }
 
         [HttpPost("rent")]
         public async Task<IActionResult> RentBooks([FromBody] BookRentalRequestDto rentalDto)
         {
+            var hasRentalOverdue = bool.Parse(User.GetClaimValue("BookRentalOverdue"));
+            if (hasRentalOverdue)
+            {
+                return BadRequest("User has Rental Overdue. Please return the overdue books before you rent again! ");
+            }
             var result = await _rentService.RentBooks(int.Parse(Helpers.GetClaimValue(User, "UserId")), rentalDto.BookIds);
 
             if (result.IsSuccess)
@@ -44,6 +52,8 @@ namespace LibraryManagementApi.Controllers
 
             if (result.IsSuccess)
             {
+                var rentalOverdue = await _rentService.HasRentalOverdue(int.Parse(Helpers.GetClaimValue(User, "UserId")));
+
                 return Ok(result.Data);
             }
 
@@ -72,5 +82,6 @@ namespace LibraryManagementApi.Controllers
                 return BadRequest(e.Message);
             }
         }
+      
     }
 }

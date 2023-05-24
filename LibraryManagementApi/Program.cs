@@ -15,8 +15,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddScoped<IAuthorService, AuthorService>();
 builder.Services.AddScoped<IBookService, BookService>();
-builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<IRentService, RentService>();
+builder.Services.AddTransient<IUserService, UserService>();
+builder.Services.AddTransient<IRentService, RentService>();
 
 builder.Services.AddLogging(builder =>
 {
