@@ -1,6 +1,6 @@
 # LibraryManagementApi
-
-Click [here](https://localhost) for demo. 
+Demo not working yet!!
+Click [here](www.vbsoftware.eu) for demo. 
 Credentials:
 
 | Username | Password | Role |
