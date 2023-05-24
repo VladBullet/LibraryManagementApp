@@ -129,6 +129,7 @@ namespace LibraryManagementApi.Services
 
             await _dbContext.SaveChangesAsync();
 
+            await UpdateUserRentalOverdue(userId);
             return Result<IEnumerable<int>>.Success(bookIds);
         }
 
