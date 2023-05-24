@@ -32,3 +32,10 @@ Credentials:
    - error handling/logging
 - Provide username and password for testing.
 
+# Implementation
+- I have added a background service that runs every 24 hours to update all users's BookRentalOverdue property.
+- This property is also updated when a user returns the books.
+- I didn't have the time to also implement the logging and error handling, but here are the next steps I would have done : 
+   - use try catch blocks to catch the errors
+   - depending on the error type and errorCode, I would have logged them as information warnings, errors, and critical errors.
+   - provide the user with a meaningful error message (which would either be stored in const variables or in a text resource file)
